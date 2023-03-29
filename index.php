@@ -77,7 +77,7 @@ include_once("$ROOT/functions/functions.php");
         <script src="js/global.js"></script>
         <script src="js/control panel.js" defer></script>
     <?php endif; ?>
-    <?php include_once("$ROOT/pages/server_info.php") ?>
+    <!-- <?php include_once("$ROOT/pages/server_info.php") ?> -->
     <?php include_once("$ROOT/pages/icons.php") ?>
 </body>
 
