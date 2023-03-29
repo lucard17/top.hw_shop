@@ -1,0 +1,21 @@
+.is-empty .is-empty-message {
+    display: unset;
+}
+
+.is-empty-message,
+.is-undefined .is-empty-message {
+    display: none;
+}
+
+.is-undefined-message {
+    display: none;
+}
+
+.is-undefined .is-undefined-message {
+    display: unset;
+}
+
+
+.item-set input:disabled {
+    background-color: unset;
+}

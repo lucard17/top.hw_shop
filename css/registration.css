@@ -1,0 +1,36 @@
+.form-control.is-not-free {
+    border-color: rgb(var(--bs-danger-rgb))
+}
+
+.form-control.is-not-free:focus,
+.form-control.is-invalid:focus {
+    --bs-text-opacity: 1;
+    --bs-border-opacity: 1;
+    color: rgba(var(--bs-warning-rgb), var(--bs-text-opacity)) !important;
+    border-color: rgba(var(--bs-warning-rgb), var(--bs-border-opacity)) !important;
+
+}
+
+.form-control.is-not-free:focus,
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-warning-rgb), 50%);
+}
+
+.is-not-free~.is-not-free-feedback {
+    display: block;
+}
+
+.is-not-free-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+}
+
+.form-control.is-not-free~.is-not-free-feedback {
+    color: rgb(var(--bs-danger-rgb));
+}
+
+.form-control.is-not-free.is-invalid~.invalid-feedback {
+    margin-top: 0;
+}

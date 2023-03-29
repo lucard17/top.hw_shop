@@ -1,0 +1,40 @@
+.pass-wrapper {position: relative}
+.popup__input-eye {
+    --color: #D8D8D8;
+    height: 1.2em;
+    width: 1.2em;
+    fill: white;
+  }
+  .popup__input-eye:hover {
+    filter: brightness(70%);
+  }
+  .popup__input-eye-wrapper {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border: none;
+    background: none;
+    filter: none;
+    box-shadow: none;
+    width: fit-content;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0.7em;
+  }
+  .popup__input-eye-wrapper:hover {
+    filter: none;
+  }
+  .input.invalid ~ .input-tip {
+    margin-top: -15px;
+  }
+  .input-tip {
+    width: 100%;
+    font-size: 12px;
+    margin-top: -55px;
+    height: 0%;
+    margin-bottom: 19px;
+    overflow: hidden;
+    z-index: 0;
+  }
