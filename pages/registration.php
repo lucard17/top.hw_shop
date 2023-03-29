@@ -5,13 +5,13 @@
 
         <form action="" method="post" id="reg-form" class="" novalidate>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" name="reg-login" id="reg-login" placeholder="Login" value="admin_gunter" required>
+                <input type="text" class="form-control" name="reg-login" id="reg-login" placeholder="Login" value="Admin_90" required>
                 <label for="floatingInput">Login:</label>
                 <div class="is-not-free-feedback">Логин уже используется</div>
                 <div class="invalid-feedback" id="reg-login-feedback">Please enter an Email.</div>
             </div>
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" name="reg-email" id="reg-email" placeholder="Email" value="gunter@bestmail.mail" required>
+                <input type="email" class="form-control" name="reg-email" id="reg-email" placeholder="Email" value="Admin_90@bestmail.mail" required>
                 <label for="email">Email address:</label>
                 <div class="is-not-free-feedback">Email уже используется</div>
                 <div class="invalid-feedback" id="reg-email-feedback">Please enter an Email.</div>
@@ -37,12 +37,12 @@
                 <div class="invalid-feedback" id="reg-city-feedback">Please enter your City.</div>
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" name="reg-password" id="reg-password" placeholder="Enter your password" value="AAaa!!11" required>
+                <input type="password" class="form-control" name="reg-password" id="reg-password" placeholder="Enter your password" value="Admin_90" required>
                 <label for="pass1">Password:</label>
                 <div class="invalid-feedback" id="reg-password-feedback">Please enter your password</div>
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" name="reg-password-repeat" id="reg-password-repeat" placeholder="Repeat your password" value="AAaa!!11" required>
+                <input type="password" class="form-control" name="reg-password-repeat" id="reg-password-repeat" placeholder="Repeat your password" value="Admin_90" required>
                 <label for="reg-password-repeat">Confirm Password:</label>
                 <div class="invalid-feedback" id="reg-password-repeat-feedback">Please repeat your password</div>
             </div>

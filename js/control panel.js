@@ -41,10 +41,6 @@ class Item {
     #handleDeleteItem(event) {
         event.stopPropagation();
         this.#element.dispatchEvent(new CustomEvent("itemDelete", { bubbles: true, detail: { id: this.id } }))
-        // fetch_data({ action: `delete ${this.#type}`, id: this.#id, p_id: this.#parentId })
-        //     .then(query_data => {
-        //         actualize(query_data)
-        //     })
     }
     get element() { return this.#element }
     get id() { return this.#id }
@@ -81,7 +77,7 @@ class Items extends Array {
         this.#eventEmitterElement = eventEmitterElement;
         if (eventEmitterElement !== undefined) {
             eventEmitterElement.addEventListener("selectedItemChanged", this.#handleSelectedItemChanged.bind(this))
-            eventEmitterElement.addEventListener("parentIdReseted", this.#handleParentIdReseted.bind(this))
+            eventEmitterElement.addEventListener("parentIdChanged", this.#handleParentIdChanged.bind(this))
         }
     }
 
@@ -150,16 +146,25 @@ class Items extends Array {
     }
     createItem({ id, name, container, type }) {
         const newItem = new Item(id, name, container);
-        newItem.element.addEventListener("itemClicked", this.#handleItemSelected.bind(this));
+        newItem.element.addEventListener("itemClicked", this.#handleItemClicked.bind(this));
         newItem.element.addEventListener("itemDelete", this.#handleItemDelete.bind(this));
         return newItem;
     }
-    #handleItemSelected(event) {
+    #handleItemClicked(event) {
         this.#selectedItemId = event.detail.id;
         this.forEach(item => {
             item.selected = item.id === event.detail.id;
         })
         this.#container.dispatchEvent(new CustomEvent("selectedItemChanged", { bubbles: false, detail: { id: this.#selectedItemId } }));
+    }
+    #handleSelectedItemChanged(event) {
+        this.#parentId = event.detail.id;
+        this.#container.dispatchEvent(new CustomEvent("parentIdChanged", { bubbles: false }))
+        if (this.#parentId === 0) {
+            this.actualize([]);
+        } else {
+            get_data({ type: this.#itemsType, p_id: this.#parentId }).then(query_data => { this.actualize(query_data) })
+        }
     }
 
     #handleItemDelete(event) {
@@ -170,21 +175,11 @@ class Items extends Array {
             })
     }
 
-    #handleParentIdReseted(event) {
+    #handleParentIdChanged(event) {
         this.#parentId = 0;
         this.actualize([]);
     }
-    #handleSelectedItemChanged(event) {
-        this.#parentId = event.detail.id;
-        if (this.#parentId === 0) {
-            this.actualize([]);
-            this.#container.dispatchEvent(new CustomEvent("parentIdReseted", { bubbles: false }))
-        } else {
-            get_data({ type: this.#itemsType, p_id: this.#parentId }).then(query_data => { this.actualize(query_data) })
-        }
 
-
-    }
     get container() { return this.#container; }
     get itemsType() { return this.#itemsType; }
     get selectedItemId() { return this.#selectedItemId; }
@@ -312,35 +307,4 @@ function fetch_data({ action = "", id = 0, name = "", p_id = 0 } = {}) {
         log(error);
     }
 
-}
-function actualizeByType(query_data, type) {
-    switch (type) {
-        case "sector":
-            Sectors.actualize(query_data);
-            break;
-        case "category":
-            Categories.actualize(query_data);
-            break;
-        case "product":
-            Products.actualize(query_data);
-            break;
-    }
-}
-function unselectAnotherItems(id, type) {
-    function unselect(item) {
-        if (item.selected && item.id !== id) {
-            item.selectedSwitch()
-        }
-    }
-    switch (type) {
-        case "sector":
-            Sectors.forEach(unselect)
-            break;
-        case "category":
-            Categories.forEach(unselect)
-            break;
-        case "product":
-            Products.forEach(unselect)
-            break;
-    }
 }

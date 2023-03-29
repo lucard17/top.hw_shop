@@ -17,12 +17,12 @@
             <h1 class='mb-4'>Login</h1>
             <form action='' method='post' id="login-form">
                 <div class='form-floating mb-3'>
-                    <input type='text' class='form-control<?= l("class", [" ", ""]) ?>' name='login' id="login-form-login" placeholder="Your login" value="admin_gunter">
+                    <input type='text' class='form-control<?= l("class", [" ", ""]) ?>' name='login' id="login-form-login" placeholder="Your login" value="Admin_90">
                     <label for='login'>Login:</label>
                     <div class="invalid-feedback" id="login-form-login-feedback"><?= l("msg", ["", ""]) ?></div>
                 </div>
                 <div class='form-floating mb-3'>
-                    <input type='password' class='form-control<?= p("class", [" ", ""]) ?>' name='password' id="login-form-password" placeholder="Your password" value="AAaa!!11">
+                    <input type='password' class='form-control<?= p("class", [" ", ""]) ?>' name='password' id="login-form-password" placeholder="Your password" value="Admin_90">
                     <label for='pass'>Password:</label>
                     <div class="invalid-feedback" id="login-form-password-feedback"><?= p("msg", [" ", ""]) ?></div>
                 </div>

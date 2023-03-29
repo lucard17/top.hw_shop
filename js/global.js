@@ -6,7 +6,7 @@ const IS_NOT_FREE_MARK = "is-not-free"
 const LOGIN_MIN_LENGTH = 3;
 const LOGIN_MAX_LENGTH = 30;
 const LOGIN_REGEXP = new RegExp(`^(?=[A-Za-z])[A-Za-z0-9'_\\-.]{${LOGIN_MIN_LENGTH},${LOGIN_MAX_LENGTH}}(?<!\\.)$`);
-const PASSWORD_REXEXP = new RegExp(`^(?=.*[A-Z]+.*)(?=.*[a-z]+.*)(?=.*[0-9]+.*)(?=.*[-~!@#$%^&*(){}\\[\\]+\`'";:<>\\/\\\|]+.*).{8,50}$`);
+const PASSWORD_REXEXP = new RegExp(`^(?=.*[A-Z]+.*)(?=.*[a-z]+.*)(?=.*[0-9]+.*)(?=.*[_-~!@#$%^&*(){}\\[\\]+\`'";:<>\\/\\\|]+.*).{8,50}$`);
 const COMMON_REGEXP = new RegExp(`^(?=[A-Za-zА-Яа-яЁё])[A-Za-zА-Яа-яё0-9'\\-\\s]{2,50}(?<![\\s\\-'])$`);
 const DEBOUNCE_TIMEOUT = 1000;
 const REGISTER_USER_URL = "./functions/register.php"
@@ -258,7 +258,7 @@ function passwordValidationFeedback(string) {
             feedback += "Пароль должен содержать строчные буквы тоже<br>";
         }
         if (!(/[0-9]/.test(string))) feedback += "Пароль должен содержать цифры<br>";
-        if (!(/[-~!@#$%^&*(){}\[\]+\`'";:<>\/\\|]/.test(string))) feedback += "Пароль должен содержать символы<br>";
+        if (!(/[_-~!@#$%^&*(){}\[\]+\`'";:<>\/\\|]/.test(string))) feedback += "Пароль должен содержать символы<br>";
         if (string.length < 8) feedback += "Пароль должнен быть длиннее)<br>";
         if (string.length > 50) feedback += "И как вы это запомните?)<br>";
 
