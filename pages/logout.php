@@ -1,0 +1,1 @@
+<?php include_once("$ROOT/pages/login.php");

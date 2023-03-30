@@ -1,16 +1,14 @@
 <?php $ROOT = __DIR__;
 session_start();
-
 include_once("$ROOT/functions/functions.php");
-
 ?>
-<?php if (isset($_SESSION['autorized'])) {
-    $pages['control panel'] = 2;
-} ?>
-<?php $pages['registration'] = 0;  ?>
-<?php $pages['login'] = 1;  ?>
-<?php isset($_GET["page"]) ? $page = $_GET["page"] : $page = 0; ?>
 
+<?php if (isset($_SESSION['autorized'])) $pages['control panel'] = 3; ?>
+<?php if (!isset($_SESSION['autorized'])) $pages['registration'] = 0;  ?>
+<?php if (!isset($_SESSION['autorized'])) $pages['login'] = 1;  ?>
+<?php if (isset($_SESSION['autorized'])) $pages['logout'] = 1;
+?>
+<?php isset($_GET["page"]) ? $page = $_GET["page"] : $page = 0; ?>
 <?php
 
 ?>
@@ -49,12 +47,36 @@ include_once("$ROOT/functions/functions.php");
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav w-100 text-end">
 
+                    <?php $navItemsStyles = [
+                        "registration" => ["ms-sm-auto"],
+                        "control panel" => ["ms-sm-auto"]
+                    ];
+                    function insertStyles($styles = [], $prefix = "", $suffix = "")
+                    {
+                        $string = "$prefix";
+                        $length = count($styles);
+                        foreach ($styles as $index => $style) {
+                            $string .= $style . ($index < $length ? " " : "$suffix");
+                        }
+                        echo $string;
+                    }
+                    function navItemStyle($prefix = "", $suffix = "")
+                    {
+                        global $pageName;
+                        global $navItemsStyles;
+                        if (isset($navItemsStyles[$pageName])) {
+                            insertStyles($navItemsStyles[$pageName], $prefix, $suffix);
+                        }
+                    }
+                    ?>
                     <?php foreach ($pages as $pageName => $pageNumber) { ?>
-                        <li class="nav-item text-capitalize fw-bold <?= ($pageName == "registration" ? ' ms-sm-auto' : '') ?>">
+
+                        <li class="nav-item text-capitalize fw-bold <?php navItemStyle(" ") ?>">
                             <a href="<?= $pageNumber == $page ? "#" : "index.php?page=$pageNumber" ?>" class="nav-link <?= $pageNumber == $page ? ' active' : '' ?>" aria-current="page" id="nav-<?= $pageName ?>-btn">
                                 <?= $pageName ?>
                             </a>
                         </li>
+
                     <?php } ?>
                 </ul>
             </div>
