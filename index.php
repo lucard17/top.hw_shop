@@ -3,10 +3,11 @@ session_start();
 include_once("$ROOT/functions/functions.php");
 ?>
 
+<?php $pages['home'] = 0; ?>
 <?php if (isset($_SESSION['autorized'])) $pages['control panel'] = 3; ?>
-<?php if (!isset($_SESSION['autorized'])) $pages['registration'] = 0;  ?>
-<?php if (!isset($_SESSION['autorized'])) $pages['login'] = 1;  ?>
-<?php if (isset($_SESSION['autorized'])) $pages['logout'] = 1;
+<?php if (!isset($_SESSION['autorized'])) $pages['registration'] = 1;  ?>
+<?php if (!isset($_SESSION['autorized'])) $pages['login'] = 2;  ?>
+<?php if (isset($_SESSION['autorized'])) $pages['logout'] = 2;
 ?>
 <?php isset($_GET["page"]) ? $page = $_GET["page"] : $page = 0; ?>
 <?php
@@ -34,6 +35,9 @@ include_once("$ROOT/functions/functions.php");
     <?php endif; ?>
     <?php if (getPageName($page)  === 'control panel' && isset($_SESSION['autorized'])) : ?>
         <link rel="stylesheet" href="css/control panel.css">
+    <?php endif; ?>
+    <?php if (getPageName($page)  === 'home') : ?>
+        <link rel="stylesheet" href="css/home.css">
     <?php endif; ?>
 </head>
 

@@ -1,0 +1,35 @@
+.photo {
+    position: relative;
+    width: 8.125rem;
+    height: 10rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    flex: 0 0 8.125rem;
+}
+
+.photo__img {
+    width: 100%;
+    display: block;
+    margin-top: -0.5rem;
+    transform: scale(162%);
+    transform-origin: 48% 35%;
+}
+
+.photo__wrap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.photo__wrap,
+.photo__wrap-hover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition: 0.3s;
+}
+.photo__wrap-hover:hover{opacity: 0}

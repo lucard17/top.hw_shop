@@ -15,7 +15,7 @@ var browserSync = require('browser-sync').create();
 gulp.task('serve', function(done) {
 
     browserSync.init({
-        proxy: "http://hw6.php.loc/"
+        proxy: "http://top.module5.hw6"
     });
 
     // gulp.watch("scr/sass/*.sass", gulp.series('sass'));
