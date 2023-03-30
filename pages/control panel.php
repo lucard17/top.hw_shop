@@ -5,7 +5,7 @@
 </div>
 <div class="row g-5">
     <div class="col col-12 col-lg-4  d-flex flex-column">
-        <h2 class="mb-4 text-center">Sectors</h2>
+        <h2 class="mb-4">Sectors</h2>
         <div class="card flex-grow-1">
             <div class="card-body d-flex flex-column">
                 <div id="sectors-wrapper" class="d-flex flex-column gap-2 item-set flex-grow-1 is-empty">
