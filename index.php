@@ -46,7 +46,6 @@ include_once("$ROOT/functions/functions.php");
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav w-100 text-end">
-
                     <?php $navItemsStyles = [
                         "registration" => ["ms-sm-auto"],
                         "control panel" => ["ms-sm-auto"]
