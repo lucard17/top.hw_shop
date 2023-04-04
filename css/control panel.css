@@ -19,3 +19,7 @@
 .item-set input:disabled {
     background-color: unset;
 }
+
+.item-set input:not(:disabled) {
+    text-decoration: underline;
+}

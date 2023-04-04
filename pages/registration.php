@@ -63,7 +63,7 @@
     <div class="modal-dialog modal-dialog-centered ">
         <div class="modal-content">
             <div class="modal-header  border-0 mb-3">
-                <h4 class="modal-title">Спасибо за регистрацию!)</h5>
+                <h4 class="modal-title">Спасибо за регистрацию!)</h4>
                     <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <!-- <div class="modal-body">

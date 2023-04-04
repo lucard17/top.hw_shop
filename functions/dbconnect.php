@@ -3,7 +3,16 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 $db = new mysqli('localhost', 'test', 'test', 'web221.nikolaev.hw5_6');
 $db->set_charset('utf8mb4');
 
-
+function pdo(): PDO
+{
+    static $pdo;
+    if (!$pdo) {
+        // $config = include __DIR__ . '/config.php';
+        $pdo = new PDO("mysql:host=localhost;dbname=web221.nikolaev.hw5_6", "root", "");
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    }
+    return $pdo;
+}
 
 function dbInsertUserData($params)
 {
@@ -27,7 +36,7 @@ function dbInsertUserData($params)
 function dbLogin($params)
 {
     global $db;
-    $stmt = $db->prepare("SELECT u_id, login, password, name, surname FROM users WHERE login=?");
+    $stmt = $db->prepare("SELECT * FROM users WHERE login=?");
     try {
         $stmt->execute([$params["login"]]);
         $res = $stmt->get_result();

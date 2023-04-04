@@ -6,6 +6,7 @@ const LOGIN_SUCCESS = 3;
 const IS_VALID_MARK = "is-valid";
 const IS_INVALID_MARK = "is-invalid";
 const IS_NOT_FREE_MARK = "is-not-free";
+const DEBUG_MODE = true;
 $ROOT = $_SERVER["DOCUMENT_ROOT"];
 
 $login_status = -1;
@@ -47,6 +48,7 @@ if (isset($_POST["login"]) && isset($_POST["password"])) {
                 $_SESSION["name"] = $queryResult["name"];
                 $_SESSION["surname"] = $queryResult["surname"];
                 $_SESSION["id"] = $queryResult["u_id"];
+                $_SESSION["role_id"] = $queryResult["role_id"];
             } else {
 
                 $login_status = LOGIN_INCORRECT_PASSWORD;
@@ -79,4 +81,40 @@ function checkValues($data, $patterns)
         if (!preg_match($pattern, mb_substr($data[$key], 0)))  return false;
     }
     return true;
+}
+function debug_to_console($data = "")
+{
+    static $logs = [];
+    if (DEBUG_MODE == false) return false;
+    if ($data !== "") {
+        $logs[] = $data;
+    } else {
+        echo "<script> 
+        const logs = (JSON.parse(decodeURIComponent('" . addslashes(json_encode($logs)) . "')));
+        logs.forEach(log=>console.log(log));
+        </script>";
+    }
+}
+function server_info()
+{
+    if (DEBUG_MODE == false) return false;
+    echo "<hr>";
+    echo "\$_SERVER[DOCUMENT_ROOT]: " . $_SERVER['DOCUMENT_ROOT'];
+    echo "<hr>";
+    echo "GET info:<br>";
+    foreach ($_GET as $key => $value) {
+        echo "\$_GET ($key) : $value <br>";
+    };
+    echo "<hr>";
+    echo "POST info:<br>";
+    foreach ($_POST as $key => $value) {
+        echo "\$_POST ($key) : $value <br>";
+    };
+    echo "<hr>";
+    echo "SESSION info:<br>";
+    echo "session_id() : " . session_id() . "<br>";
+    foreach ($_SESSION as $key => $value) {
+        echo "\$_SESSION ($key) : $value <br>";
+    };
+    echo "<hr>";
 }

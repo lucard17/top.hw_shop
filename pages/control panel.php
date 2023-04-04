@@ -14,7 +14,7 @@
                 <hr>
                 <div class="input-group" id="sectors-input-group">
                     <input type="text" class="form-control border-success" placeholder="Sector name" value="sector" aria-label="" id="sector-add-input">
-                    <button class="btn btn-success" type="button" id="sector-add-button">Add</button>
+                    <button class="btn btn-success bi bi-database-add" type="button" id="sector-add-button"></button>
                 </div>
                 <!-- <div class="invalid-feedback">Не должно быть пустым</div> -->
             </div>
@@ -33,7 +33,7 @@
                 <hr>
                 <div class="input-group" id="categories-input-group">
                     <input type="text" class="form-control border-success" placeholder="Category name" value="category" aria-label="" id="category-add-input">
-                    <button class="btn btn-success" type="button" id="category-add-button">Add</button>
+                    <button class="btn btn-success bi bi-database-add" type="button" id="category-add-button"></button>
                 </div>
                 <!-- <div class="invalid-feedback">Не должно быть пустым</div> -->
             </div>
@@ -50,10 +50,47 @@
                 <hr>
                 <div class="input-group" id="products-input-group">
                     <input type="text" class="form-control border-success" placeholder="Product name" value="product" aria-label="" id="product-add-input">
-                    <button class="btn btn-success" type="button" id="product-add-button">Add</button>
+                    <button class="btn btn-success bi bi-database-add" type="button" id="product-add-button"></button>
                 </div>
                 <!-- <div class="invalid-feedback">Не должно быть пустым</div> -->
             </div>
         </div>
+    </div>
+</div>
+<div class="modal modal-xl fade" id="product-form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form class="modal-content">
+            <div class="modal-header  border-0 mb-3">
+                <h4 class="modal-title">Редактирование продукта</h4>
+                
+                <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Close" id="product-form-close" ></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group pb-3">
+                    <label for="product-name">Name:</label>
+                    <input type="text" name="name" id="product-name" class="form-control">
+                </div>
+                <div class="form-group pb-3">
+                    <label for="product-brand">Brand:</label>
+                    <input type="text" name="brand" id="product-brand" class="form-control">
+                </div>
+                <div class="form-group pb-3">
+                    <label for="product-description">Description:</label>
+                    <textarea class="form-control" id="product-description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Price:</label>
+                    <input type="number" name="price" id="product-price" class="form-control" min="0">
+                </div>
+            </div>
+            <div class="modal-footer  border-0">
+                <button type="button" class="btn btn-lg btn-success flex-grow-1 mt-3 " id="product-form-confirm">
+                    <i class="bi bi-database-check"></i> Accept
+                </button>
+                <button type="button" class="btn btn-lg btn-danger flex-grow-1 mt-3" id="product-form-deny">
+                    <i class="bi bi-database-x"></i> Deny
+                </button>
+            </div>
+        </form>
     </div>
 </div>

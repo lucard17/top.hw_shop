@@ -14,7 +14,7 @@ include_once("$ROOT/functions/functions.php");
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -24,6 +24,7 @@ include_once("$ROOT/functions/functions.php");
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/bootstrap.css">
     <!-- <link rel="stylesheet" href="css/style.css"> -->
     <!-- <script src="js/imask.js" defer></script> -->
@@ -42,7 +43,7 @@ include_once("$ROOT/functions/functions.php");
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-sm bg-light">
+    <nav class="navbar navbar-expand-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">Navbar</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,7 +103,7 @@ include_once("$ROOT/functions/functions.php");
         <script src="js/global.js"></script>
         <script src="js/control panel.js" defer></script>
     <?php endif; ?>
-    <!-- <?php include_once("$ROOT/pages/server_info.php") ?> -->
+    <?php server_info(); ?>
     <?php include_once("$ROOT/pages/icons.php") ?>
 </body>
 

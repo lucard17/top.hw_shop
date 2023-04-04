@@ -12,20 +12,23 @@ var browserSync = require('browser-sync').create();
 //     done();
 // });
 
-gulp.task('serve', function(done) {
+gulp.task('serve', function (done) {
 
-    browserSync.init({
-        proxy: "http://top.module5.hw6"
-    });
+  browserSync.init({
+    proxy: "http://hw6.php.top/"
+  });
 
-    // gulp.watch("scr/sass/*.sass", gulp.series('sass'));
-    gulp.watch(["*.php","pages/*.php", "js/*.*,css/*.*"]).on('change', () => {
+  // gulp.watch("scr/sass/*.sass", gulp.series('sass'));
+  gulp.watch(["*.php",
+    "pages/*.php",
+    "js/*.*",
+    "css/*.*"]).on('change', () => {
       browserSync.reload();
       done();
     });
-  
 
-    done();
+
+  done();
 });
 
 gulp.task('default', gulp.series('serve'));

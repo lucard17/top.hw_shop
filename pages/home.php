@@ -24,6 +24,7 @@
         <div class="row justify-content-center mb-5">
             <p>Думал чего нибудь эдакого здесь написать, передумал)</p>
             <p>Сделал эту страницу, чтобы была стартовой, была доступна всегда </p>
+            <button class="btn btn-outline-primary bi bi-pencil-square"></button>
 
         </div>
     </div>
