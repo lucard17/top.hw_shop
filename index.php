@@ -3,8 +3,9 @@ session_start();
 include_once("$ROOT/functions/functions.php");
 ?>
 
-<?php $pages['home'] = 0; ?>
+<?php $pages['catalogue'] = 0; ?>
 <?php if (isset($_SESSION['autorized'])) $pages['control panel'] = 3; ?>
+<?php if (isset($_SESSION['autorized'])) $pages['cart'] = 4; ?>
 <?php if (!isset($_SESSION['autorized'])) $pages['registration'] = 1;  ?>
 <?php if (!isset($_SESSION['autorized'])) $pages['login'] = 2;  ?>
 <?php if (isset($_SESSION['autorized'])) $pages['logout'] = 2;
@@ -37,23 +38,27 @@ include_once("$ROOT/functions/functions.php");
     <?php if (getPageName($page)  === 'control panel' && isset($_SESSION['autorized'])) : ?>
         <link rel="stylesheet" href="css/control panel.css">
     <?php endif; ?>
-    <?php if (getPageName($page)  === 'home') : ?>
-        <link rel="stylesheet" href="css/home.css">
+    <?php if (getPageName($page)  === 'catalogue') : ?>
+        <link rel="stylesheet" href="css/catalogue.css">
+    <?php endif; ?>
+    <?php if (getPageName($page)  === 'cart') : ?>
+        <link rel="stylesheet" href="css/cart.css">
     <?php endif; ?>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Navbar</a>
+            <a class="navbar-brand fw-bold align-items-baseline" href="#">Navbar</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav w-100 text-end">
-                    <?php $navItemsStyles = [
-                        "registration" => ["ms-sm-auto"],
-                        "control panel" => ["ms-sm-auto"]
+                    <?php $navItemsClasses = [
+                        '$common' => ['nav-item text-capitalize fw-bold'],
+                        "registration" => ['$common ms-sm-auto'],
+                        "control panel" => ['$common ms-sm-auto me-sm-auto'],
                     ];
                     function insertStyles($styles = [], $prefix = "", $suffix = "")
                     {
@@ -64,19 +69,30 @@ include_once("$ROOT/functions/functions.php");
                         }
                         echo $string;
                     }
-                    function navItemStyle($prefix = "", $suffix = "")
+                    function navItemClasses($pageName)
                     {
-                        global $pageName;
-                        global $navItemsStyles;
-                        if (isset($navItemsStyles[$pageName])) {
-                            insertStyles($navItemsStyles[$pageName], $prefix, $suffix);
+                        global $navItemsClasses;
+                        if (!isset($navItemsClasses[$pageName])) {
+                            insertStyles($navItemsClasses['$common']);
+                        } else {
+                            $styles = $navItemsClasses[$pageName];
+                            foreach ($styles as $index => $style) {
+                                $styles[$index] = str_replace('$common', $navItemsClasses['$common'][0], $style);
+                            }
+                            insertStyles($styles);
                         }
                     }
                     ?>
                     <?php foreach ($pages as $pageName => $pageNumber) { ?>
 
-                        <li class="nav-item text-capitalize fw-bold <?php navItemStyle(" ") ?>">
-                            <a href="<?= $pageNumber == $page ? "#" : "index.php?page=$pageNumber" ?>" class="nav-link <?= $pageNumber == $page ? ' active' : '' ?>" aria-current="page" id="nav-<?= $pageName ?>-btn">
+                        <li class="<?php navItemClasses($pageName) ?>">
+                            <a href="<?= $pageNumber == $page ? "#" : "index.php?page=$pageNumber" ?>" class="<?php
+                                                                                                                if ($pageName !== 'cart') {
+                                                                                                                    echo "nav-link" . ($pageNumber == $page ? ' active' : '');
+                                                                                                                } else {
+                                                                                                                    echo "btn btn-warning" . ($pageNumber == $page ? ' fw-bold' : '');
+                                                                                                                }
+                                                                                                                ?>" aria-current="page" id="nav-<?= $pageName ?>-btn">
                                 <?= $pageName ?>
                             </a>
                         </li>
@@ -92,16 +108,24 @@ include_once("$ROOT/functions/functions.php");
 
     <script src="js/bootstrap.bundle.js"></script>
     <?php if (getPageName($page)  === 'registration') : ?>
-        <script src="js/global.js"></script>
+        <script src="js/global.js" defer></script>
         <script src="js/registration.js"></script>
     <?php endif; ?>
     <?php if (getPageName($page)  === 'login' && !isset($_SESSION['autorized'])) : ?>
-        <script src="js/global.js"></script>
+        <script src="js/global.js" defer></script>
         <script src="js/login.js"></script>
     <?php endif; ?>
     <?php if (getPageName($page)  === 'control panel' && isset($_SESSION['autorized'])) : ?>
-        <script src="js/global.js"></script>
+        <script src="js/global.js" defer></script>
         <script src="js/control panel.js" defer></script>
+    <?php endif; ?>
+    <?php if (getPageName($page)  === 'catalogue') : ?>
+        <script src="js/global.js" defer></script>
+        <script src="js/catalogue.js" defer></script>
+    <?php endif; ?>
+    <?php if (getPageName($page)  === 'cart') : ?>
+        <script src="js/global.js" defer></script>
+        <script src="js/cart.js" defer></script>
     <?php endif; ?>
     <?php server_info(); ?>
     <?php include_once("$ROOT/pages/icons.php") ?>

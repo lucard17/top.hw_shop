@@ -13,50 +13,40 @@ class Item {
     #selected = false;
     #selectionStyles = ["bg-primary", "text-white", "fw-bold"];
     constructor(id, name, container, type = "sector", parentId = 0) {
-        this.#element = document.createElement("div");
-        this.#element.classList.add("input-group");
-        this.#input = document.createElement("input");
-        this.#input.setAttribute("type", "text");
-        this.#input.classList.add("form-control");
-        this.#input.classList.add("border-primary");
-        this.#input.setAttribute("value", name);
-        this.#name = name;
-        this.#input.setAttribute("data-id", id);
         this.#id = id;
-        this.#input.disabled = true;
-        this.#element.appendChild(this.#input);
-
-        //Кнопка начала редактирования названия
-        this.#buttonEditStart = document.createElement("button");
-        this.#buttonEditStart.classList.add("btn");
-        this.#buttonEditStart.classList.add("btn-outline-primary");
-        this.#buttonEditStart.classList.add("bi");
-        this.#buttonEditStart.classList.add("bi-pencil-square");
-        this.#element.appendChild(this.#buttonEditStart);
-
-        //Кнопка начала редактирования названия
-        this.#buttonEditFinish = document.createElement("button");
-        this.#buttonEditFinish.classList.add("btn");
-        this.#buttonEditFinish.classList.add("btn-outline-primary");
-        this.#buttonEditFinish.classList.add("bi");
-        // this.#buttonEditFinish.classList.add("bi-check-square");
-        this.#buttonEditFinish.classList.add("bi-database-check");
-        this.#buttonEditFinish.hidden = true;
-        this.#element.appendChild(this.#buttonEditFinish);
-
-        //Кнопка удаления элемента из списка
-        this.#buttonDelete = document.createElement("button");
-        this.#buttonDelete.classList.add("btn");
-        this.#buttonDelete.classList.add("btn-outline-danger");
-        this.#buttonDelete.setAttribute("type", "button");
-        this.#buttonDelete.innerText = "DEL";
-        this.#element.appendChild(this.#buttonDelete);
-
+        this.#name = name;
         this.#container = container;
-        this.#container.appendChild(this.#element);
         this.#type = type;
         this.#parentId = parentId;
 
+        this.#input = createElement("input", {
+            class: "form-control border-primary",
+            type: "text",
+            value: name,
+            'data-id': id,
+            disabled: true
+        })
+        this.#buttonEditStart = createElement("button",
+            { class: "btn btn-outline-primary bi bi-pencil-square" });
+        this.#buttonEditFinish = createElement("button", {
+            class: "btn btn-outline-primary bi bi-database-check",
+            hidden: true
+        });
+        this.#buttonDelete = createElement("button", {
+            class: "btn btn-outline-danger bi bi-trash",
+            type: "button"
+        });
+
+        this.#element = createElement("div", {
+            class: "input-group"
+        }, [
+            this.#input,
+            this.#buttonEditStart,
+            this.#buttonEditFinish,
+            this.#buttonDelete
+        ])
+
+        this.#container.appendChild(this.#element);
         this.#element.addEventListener("click", this.#handleItemClicked.bind(this));
         this.#input.addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
@@ -93,7 +83,7 @@ class Item {
         const newName = this.#input.value;
         if (newName !== this.#name) {
             // debugger;
-            const responce = fetchFormData({ action: "update", type: this.#type, id: this.#id, name: newName });
+            const responce = fetchItems({ action: "update", type: this.#type, id: this.#id, name: newName });
             responce.then(succes => {
                 if (!succes) {
                     this.#input.value = this.#name;
@@ -103,7 +93,7 @@ class Item {
     }
     #handleDeleteItem(event) {
         event.stopPropagation();
-        if (confirm(`Вы подтверждаете удаление\\n ${this.#type}: ${this.#name}`)) {
+        if (confirm(`Вы подтверждаете удаление: ${this.#type}: ${this.#name}`)) {
             this.#element.dispatchEvent(new CustomEvent("itemDelete", { bubbles: true, detail: { id: this.id } }));
         };
     }
@@ -243,13 +233,17 @@ class Items extends Array {
             this.#get_items().then(query_data => { this.render(query_data) })
         }
     }
-    #get_items() { return get_data({ type: this.#itemsType, p_id: this.#parentId }) }
+    #get_items() {
+        return fetchItems({ action: "select", type: this.#itemsType, p_id: this.#parentId })
+    }
     #handleItemDelete(event) {
         const id = event.detail.id;
-        fetch_data({ action: `delete ${this.#itemsType}`, id, p_id: this.parentId })
-            .then(query_data => {
-                this.render(query_data)
-            })
+        fetchItems({ action: "delete", type: this.#itemsType, id })
+            .then(result => {
+                if (result === true) {
+                    return this.#get_items()
+                }
+            }).then(query_data => this.render(query_data));
     }
 
     #handleParentIdChanged(event) {
@@ -280,9 +274,15 @@ class InputGroup {
         const isValid = commonValidation(name);
         if (!isValid) return;
         const p_id = this.controlledElement.parentId;
-        fetch_data({ action: `insert ${this.type}`, name, p_id }).then(query_data => {
-            this.controlledElement.render(query_data);
-        })
+        // fetch_data({ action: `insert ${this.type}`, name, p_id }).then(query_data => {
+        //     this.controlledElement.render(query_data);
+        // })
+        fetchItems({ action: 'insert', type: this.type, name, p_id })
+            .then(result => {
+                if (result === true) {
+                    this.controlledElement.updateData()
+                }
+            });
     }
     #validate() {
         const value = this.input.value;
@@ -318,7 +318,7 @@ class ProductForm {
         controls.forEach(item => {
             this.#inputItems[item.name] = item;
         });
-        log(this.#inputItems);
+        // log(this.#inputItems);
         this.#buttonConfirm = this.#container.querySelector("#product-form-confirm");
         this.#buttonConfirm.addEventListener("click", this.#handleConfirm.bind(this));
 
@@ -337,7 +337,7 @@ class ProductForm {
         }
     }
     #fetchData() {
-        return fetchFormData({ action: "select", type: this.#type, id: this.#id })
+        return fetchItems({ action: "select", type: this.#type, id: this.#id })
             .then(product => {
                 if (Array.isArray(product) && product.length === 1) {
                     this.#data = product[0];
@@ -382,7 +382,7 @@ class ProductForm {
             id: this.#id,
             ...this.#valuesExtract()
         };
-        fetchFormData(parameters).then(succes => {
+        fetchItems(parameters).then(succes => {
             if (succes) {
                 this.#fetchData().then(succes => {
                     if (succes) {
@@ -434,70 +434,14 @@ const productForm = new ProductForm({
     modal: new bootstrap.Modal(document.getElementById('product-form')),
     eventEmitterElement: Products.container
 });
-// modal.show();
 
-get_data().then(query_data => {
+
+fetchItems({ action: "select", type: "sector" }).then(query_data => {
     Sectors.render(query_data);
 });
 
 
-
-function get_data({ type = 'sector', p_id = 0 } = {}) {
-    const point = `${window.location.origin}/functions/sectors.php`
-    let url = new URL(point);
-    url.searchParams.set("q", "select");
-    url.searchParams.set("type", type);
-    url.searchParams.set("p_id", p_id);
-    // url =
-    // const promise = fetch("./functions/sectors.php?q=get");
-    const promise = fetch(url);
-    return promise.then(response => {
-        if (response.ok) {
-            return response.json()
-        }
-    })
-}
-function add_item(data) {
-    const promise = fetch("./functions/sectors.php", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(data)
-    });
-    return promise.then(response => {
-        if (response.ok) {
-            return response.json()
-        }
-    })
-}
-function fetch_data({ action = "", type = "", id = 0, name = "", p_id = 0 } = {}) {
-    const parameters = {};
-    if (action !== "") { parameters.action = action };
-    if (type !== "") { parameters.type = type };
-    if (id !== 0) { parameters.id = id };
-    if (name !== "") { parameters.name = name };
-    if (p_id !== 0) { parameters.p_id = p_id };
-    try {
-        const promise = fetch("./functions/sectors.php", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify(parameters)
-        });
-        return promise.then(response => {
-            if (response.ok) {
-                return response.json()
-            }
-        })
-    } catch (e) {
-        const error = e;
-        log(error);
-    }
-
-}
-function fetchFormData({ action = "", type = "", id = 0, name = "", p_id = 0,
+function fetchItems({ action = "", type = "", id = 0, name = "", p_id = 0,
     brand = "", description = "", price = 0 } = {}) {
     const formData = new FormData();
 
@@ -510,7 +454,7 @@ function fetchFormData({ action = "", type = "", id = 0, name = "", p_id = 0,
     if (description !== "") { formData.append("description", description) };
     if (price !== 0) { formData.append("price", price) };
     try {
-        const promise = fetch("./functions/update_item.php", {
+        const promise = fetch("./functions/admin.php", {
             method: 'POST',
             body: formData
         });
@@ -525,4 +469,3 @@ function fetchFormData({ action = "", type = "", id = 0, name = "", p_id = 0,
     }
 
 }
-const form = document.forms[0];
