@@ -96,7 +96,10 @@ function debug_to_console($data = "")
     }
 }
 function server_info()
-{
+{   
+    if (!isset($_SESSION["role_id"])||$_SESSION["role_id"]!==1) {
+        return false;
+    }
     if (DEBUG_MODE == false) return false;
     echo "<hr>";
     echo "\$_SERVER[DOCUMENT_ROOT]: " . $_SERVER['DOCUMENT_ROOT'];
