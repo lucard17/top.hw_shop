@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Мар 29 2023 г., 23:12
+-- Время создания: Апр 06 2023 г., 07:58
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.1.9
 
@@ -24,6 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `carts`
+--
+
+CREATE TABLE `carts` (
+  `u_id` int NOT NULL,
+  `p_id` int NOT NULL,
+  `count` int UNSIGNED DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `carts`
+--
+
+INSERT INTO `carts` (`u_id`, `p_id`, `count`) VALUES
+(1, 1, 2),
+(1, 2, 2),
+(1, 6, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `categories`
 --
 
@@ -38,10 +59,17 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`, `p_id`) VALUES
-(1, 'category 1', 17),
-(3, 'category 2', 17),
-(2, 'category 2', 60),
-(4, 'category 3', 17);
+(2, 's2 category1', 60),
+(6, 's2 category2', 60),
+(7, 's3 category1', 67),
+(8, 's3 category2', 67),
+(9, 's3 category3', 67),
+(10, 's4 category1', 70),
+(11, 's4 category2', 70),
+(12, 's4 category3', 70),
+(13, 's4 category4', 70),
+(3, 'Планшеты', 17),
+(1, 'Смартфоны', 17);
 
 -- --------------------------------------------------------
 
@@ -52,18 +80,23 @@ INSERT INTO `categories` (`id`, `name`, `p_id`) VALUES
 CREATE TABLE `products` (
   `id` int NOT NULL,
   `name` varchar(50) NOT NULL,
-  `p_id` int NOT NULL
+  `p_id` int NOT NULL,
+  `brand` varchar(255) DEFAULT '',
+  `price` mediumint UNSIGNED DEFAULT '0',
+  `description` varchar(512) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `p_id`) VALUES
-(1, 'product 1', 1),
-(3, 'product 1', 3),
-(2, 'product 2', 1),
-(4, 'SuperProduct', 3);
+INSERT INTO `products` (`id`, `name`, `p_id`, `brand`, `price`, `description`) VALUES
+(1, 'Лушая телефона', 1, 'Луший', 20000, 'Лушая телефона'),
+(2, 'Самая лушая телефона', 1, 'Самый луший', 30000, 'Самая лушая телефона EVER'),
+(3, 'product 1', 3, '', 0, ''),
+(4, 'SuperProduct', 3, '', 0, ''),
+(6, 'Самая наилушая телефона', 1, 'Самый наилуший', 40000, 'Самая наилушая телефона EVER'),
+(14, 'product', 10, '', 0, '');
 
 -- --------------------------------------------------------
 
@@ -81,10 +114,10 @@ CREATE TABLE `sectors` (
 --
 
 INSERT INTO `sectors` (`id`, `name`) VALUES
-(60, 'sector'),
-(67, 'sector 1'),
-(70, 'sector 2'),
-(17, 'sector 4');
+(60, 'sector 2'),
+(67, 'sector 3'),
+(70, 'sector 4'),
+(17, 'Смартфоны и гаджеты');
 
 -- --------------------------------------------------------
 
@@ -100,19 +133,27 @@ CREATE TABLE `users` (
   `surname` varchar(40) NOT NULL,
   `name` varchar(40) NOT NULL,
   `country` varchar(40) NOT NULL,
-  `city` varchar(40) NOT NULL
+  `city` varchar(40) NOT NULL,
+  `role_id` tinyint NOT NULL DEFAULT '2'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`u_id`, `login`, `email`, `password`, `surname`, `name`, `country`, `city`) VALUES
-(1, 'Admin_90', 'Admin_90@bestmail.mail', '$2y$10$P9W.BxEO3QWum65rKEM7ce0xh6ZC/VF11XOLUXWRcWT0Mma9YyxfW', 'о\'Дим', 'Гюнтер', 'Темерия', 'Велен');
+INSERT INTO `users` (`u_id`, `login`, `email`, `password`, `surname`, `name`, `country`, `city`, `role_id`) VALUES
+(1, 'Admin_90', 'Admin_90@bestmail.mail', '$2y$10$P9W.BxEO3QWum65rKEM7ce0xh6ZC/VF11XOLUXWRcWT0Mma9YyxfW', 'о\'Дим', 'Гюнтер', 'Темерия', 'Велен', 1);
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `carts`
+--
+ALTER TABLE `carts`
+  ADD UNIQUE KEY `u_id` (`u_id`,`p_id`),
+  ADD KEY `p_id` (`p_id`);
 
 --
 -- Индексы таблицы `categories`
@@ -153,13 +194,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT для таблицы `sectors`
@@ -176,6 +217,13 @@ ALTER TABLE `users`
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
+
+--
+-- Ограничения внешнего ключа таблицы `carts`
+--
+ALTER TABLE `carts`
+  ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`u_id`) REFERENCES `users` (`u_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `carts_ibfk_2` FOREIGN KEY (`p_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Ограничения внешнего ключа таблицы `categories`
