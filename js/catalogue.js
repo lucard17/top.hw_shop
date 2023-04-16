@@ -1,3 +1,4 @@
+
 class MenuItem {
     element
     #id;
@@ -49,6 +50,7 @@ class Menu extends Array {
 
     }
 }
+
 class Products extends Array {
     #container;
     #buttonBuy;
@@ -63,20 +65,37 @@ class Products extends Array {
     update(items) {
         this.clear();
         items.forEach(item => {
-            this.#push(this.createElement(item))
+            this.#push(new ProductCard(item))
         })
 
     };
-    createElement({ id, name, brand, description, price }) {
+
+    #handleButtonBuy(event) {
+        cart.addItem(event.detail.id)
+    }
+    #push(element) {
+        this.push(element);
+        this.#container.append(element);
+        element.addEventListener('click-button-buy', this.#handleButtonBuy)
+    }
+}
+
+class ProductCard extends HTMLElement {
+    #buttonBuy;
+    constructor({ id, name, brand, description, price, images }) {
+        super();
         this.#buttonBuy = createElement('button', { class: "btn btn-warning" }, [
             createElement('i', { class: "bi bi-cart-plus fs-5" })
         ]);
-        this.#buttonBuy.addEventListener("click", () => {
-            this.#handleButtonBuy(id);
+        this.#buttonBuy.addEventListener("click", (event) => {
+            event.stopPropagation();
+            this.dispatchEvent(new CustomEvent("click-button-buy", { detail: { id } }))
         })
-        return createElement('div', { class: "col col-lg-4" }, [
+        this.className = "col col-lg-4"
+        this.append(
             createElement('div', { class: "card h-100" }, [
                 createElement('div', { class: "card-body d-flex flex-column" }, [
+                    new ProductImages(images),
                     createElement('h4', { class: "card-title mb-3" }, [name]),
                     createElement('p', { class: "card-text" }, [`<b>Бренд:</b> ${brand}`]),
                     createElement('p', { class: "card-text flex-grow-1" }, [`<b>Описание:</b> ${description}`]),
@@ -87,27 +106,51 @@ class Products extends Array {
                 ])
 
             ])
-        ]);
-        // <div class="col col-lg-4">
-        //     <div class="card">
-        //         <div class="card-body">
-        //             <h5 class="card-title">Special title treatment</h5>
-        //             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-        //             <div class="d-flex justify-content-between align-items-center">
-        //                 <span class="fs-5">40000</span><button class="btn btn-warning"> <i class="bi bi-cart-plus fs-5"></i></button>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-    };
-    #handleButtonBuy(p_id) {
-        cart.addItem(p_id)
-    }
-    #push(element) {
-        this.push(element);
-        this.#container.appendChild(element);
+        );
+        this.addEventListener("click", () => {
+            window.location.replace("index.php?product=" + id)
+        })
     }
 }
+customElements.define("product-card", ProductCard)
+
+class ProductImages extends HTMLElement {
+    #link;
+    constructor(images = []) {
+        super();
+        // this.#link = link;
+        this.className = "mb-4"
+        if (images.length == 0) {
+            this.append(createElement("img", { src: "images/no_image.png", alt: "no image", class: "image" }));
+        }
+        if (images.length >= 1) {
+            this.append(createElement("img", { src: images[0].src, alt: "no image", class: "image" }));
+        }
+        if (images.length > 1) {
+            this.append(
+                createElement("div", { class: "images" },
+                    [
+                        ...this.#createHoverBoxes(images),
+
+                        ...this.#createImages(images.slice(1)),
+
+                    ]
+                )
+            );
+
+        }
+    }
+    #createHoverBoxes(images) {
+        return images.map((item, index) => createElement('div', { class: "hover-box", 'data-num': index + 1 }
+        ))
+    }
+    #createImages(images) {
+        return images.map((item, index) =>
+            createElement("img", { src: item.src, alt: "", class: "image", 'data-num': index + 2 })
+        )
+    }
+}
+customElements.define('product-images', ProductImages);
 let menu;
 let accordion = document.getElementById("catalogue-accordion");
 get_catalogue().then(json => {

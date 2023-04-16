@@ -3,14 +3,19 @@ session_start();
 include_once("$ROOT/functions/functions.php");
 ?>
 
-<?php $pages['catalogue'] = 0; ?>
-<?php if (isset($_SESSION['autorized'])) $pages['control panel'] = 3; ?>
-<?php if (isset($_SESSION['autorized'])) $pages['cart'] = 4; ?>
-<?php if (!isset($_SESSION['autorized'])) $pages['registration'] = 1;  ?>
-<?php if (!isset($_SESSION['autorized'])) $pages['login'] = 2;  ?>
-<?php if (isset($_SESSION['autorized'])) $pages['logout'] = 2;
+<?php $pages['catalogue'] = 1; ?>
+<?php if (isset($_SESSION['autorized'])) $pages['control panel'] = 4; ?>
+<?php if (isset($_SESSION['autorized'])) $pages['cart'] = 5; ?>
+<?php if (!isset($_SESSION['autorized'])) $pages['registration'] = 2;  ?>
+<?php if (!isset($_SESSION['autorized'])) $pages['login'] = 3;  ?>
+<?php if (isset($_SESSION['autorized'])) $pages['logout'] = 3;
 ?>
-<?php isset($_GET["page"]) ? $page = $_GET["page"] : $page = 0; ?>
+<?php
+$page = 0;
+if (!isset($_GET["product"])) {
+    isset($_GET["page"]) ? $page = $_GET["page"] : $page = 1;
+}
+?>
 <?php
 
 ?>
@@ -43,6 +48,9 @@ include_once("$ROOT/functions/functions.php");
     <?php endif; ?>
     <?php if (getPageName($page)  === 'cart') : ?>
         <link rel="stylesheet" href="css/cart.css">
+    <?php endif; ?>
+    <?php if (isset($_GET["product"])) : ?>
+        <link rel="stylesheet" href="css/product.css">
     <?php endif; ?>
 </head>
 
@@ -103,30 +111,36 @@ include_once("$ROOT/functions/functions.php");
         </div>
     </nav>
     <div class="container py-5">
-        <?php include_once(getPageURL($page)); ?>
+        <?php
+        if (isset($_GET["page"])) {
+            include_once(getPageURL($page));
+        }
+        if (isset($_GET["product"])) {
+            include_once("pages/product.php");
+        }
+        ?>
     </div>
-
-    <script src="js/bootstrap.bundle.js"></script>
+    <script src="js/bootstrap.bundle.js" defer></script>
+    <script src="js/global.js" defer></script>
     <?php if (getPageName($page)  === 'registration') : ?>
-        <script src="js/global.js" defer></script>
-        <script src="js/registration.js"></script>
+        <script src="js/registration.js" defer></script>
     <?php endif; ?>
     <?php if (getPageName($page)  === 'login' && !isset($_SESSION['autorized'])) : ?>
-        <script src="js/global.js" defer></script>
-        <script src="js/login.js"></script>
+        <script src="js/login.js" defer></script>
     <?php endif; ?>
     <?php if (getPageName($page)  === 'control panel' && isset($_SESSION['autorized'])) : ?>
-        <script src="js/global.js" defer></script>
         <script src="js/control panel.js" defer></script>
     <?php endif; ?>
     <?php if (getPageName($page)  === 'catalogue') : ?>
-        <script src="js/global.js" defer></script>
         <script src="js/catalogue.js" defer></script>
     <?php endif; ?>
     <?php if (getPageName($page)  === 'cart') : ?>
-        <script src="js/global.js" defer></script>
         <script src="js/cart.js" defer></script>
     <?php endif; ?>
+    <?php if (isset($_GET["product"])) : ?>
+        <script src="js/product.js" defer></script>
+    <?php endif; ?>
+
     <?php server_info(); ?>
     <?php include_once("$ROOT/pages/icons.php") ?>
 </body>

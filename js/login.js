@@ -11,7 +11,6 @@ const Password = new FormInput({
     feedbackMessageFN: passwordValidationFeedback,
 });
 
-
 class Form {
     static #formIsValid = false;
     static #element = document.getElementById("login-form");
@@ -28,12 +27,6 @@ class Form {
             Form.reset();
             Form.#element.querySelectorAll("input").forEach(input => input.dispatchEvent(CHANGE_EVENT));
             Form.checkValidity();
-        }),
-        Password.element.addEventListener("blur", () => {
-            PasswordRepeat.checkValidity()
-        }),
-        Password.element.addEventListener("input", () => {
-            PasswordRepeat.checkValidity()
         }),
     ]
     static #state = [

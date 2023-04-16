@@ -306,7 +306,7 @@ function setValidationStyle(element, isValid = null) {
 
 }
 
-function createElement(type, attributes = {}, childs = [], key = "") {
+function createElement(type, attributes = {}, childs = [], returnCallBack = (element) => { variable = element }) {
     const element = document.createElement(type);
     for (attribute in attributes) {
         element.setAttribute(attribute, attributes[attribute]);
@@ -319,9 +319,7 @@ function createElement(type, attributes = {}, childs = [], key = "") {
         }
 
     });
-    if (key !== "") {
-        this[key] = element;
-    }
+    returnCallBack(element)
     return element;
 }
 
@@ -537,6 +535,47 @@ class CartItem extends HTMLElement {
         this.#id = id;
         this.#name = name;
         this.className = "cart-item"
+
+        this.appendChild(createElement("input", {
+            class: "form-check-input cart-item_checkbox",
+            type: "checkbox", checked: true
+        }, [], (e) => this.#checkBox = e));
+
+        this.appendChild(createElement("div", {
+            class: "cart-item_name"
+        }, [
+            createElement('a', { href: "index.php?product=" + id }, [name])
+        ]));
+
+
+        // <a href="http://"></a>
+        this.#counterButtonDecrease = createElement("button", {
+            class: "bi bi-caret-left-fill cart-item_btn-counter"
+        })
+
+        this.#counter = createElement("span", {
+            class: "cart-item_counter"
+        }, [" "])
+        this.#counterButtonIncrease = createElement("button", {
+            class: "bi bi-caret-right-fill cart-item_btn-counter"
+        })
+
+
+        this.appendChild(createElement("div", {
+        }, [
+            this.#counterButtonDecrease,
+            this.#counter,
+            this.#counterButtonIncrease]
+        ));
+        this.count = count;
+        this.#priceElement = createElement('div', {
+            class: "cart-item_price"
+        });
+        this.appendChild(this.#priceElement);
+        this.price = price;
+        this.#buttonDelete = createElement("button", { class: "btn btn-sm cart-item_btn-remove bi bi-trash" })
+        this.appendChild(this.#buttonDelete);
+        /*
         this.#checkBox = createElement("input", {
             class: "form-check-input cart-item_checkbox",
             type: "checkbox", checked: true
@@ -571,6 +610,7 @@ class CartItem extends HTMLElement {
         this.price = price;
         this.#buttonDelete = createElement("button", { class: "btn btn-sm cart-item_btn-remove bi bi-trash" })
         this.appendChild(this.#buttonDelete);
+        */
         this.#checkBox.addEventListener("click", () => {
             this.#checked = this.#checkBox.checked;
             this.dispatchEvent(
@@ -624,5 +664,10 @@ class CartItem extends HTMLElement {
 
 }
 customElements.define('card-item', CartItem);
-const cart = new Cart({ cartButton: document.getElementById("nav-cart-btn") });
+const cartButton = document.getElementById("nav-cart-btn");
+let cart;
+if (cartButton) {
+    cart = new Cart({ cartButton });
+}
+
 

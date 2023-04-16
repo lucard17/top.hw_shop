@@ -1,3 +1,83 @@
 .list-group-item {
     cursor: pointer;
 }
+
+[class^=hover-box] {
+    position: relative;
+    height: 100%;
+    z-index: 3;
+}
+
+
+[class^=hover-box][data-num="2"]:hover~.image[data-num="2"] {
+    display: block;
+}
+
+[class^=hover-box][data-num="3"]:hover~.image[data-num="3"] {
+    display: block;
+}
+
+[class^=hover-box][data-num="4"]:hover~.image[data-num="4"] {
+    display: block;
+}
+
+[class^=hover-box][data-num="5"]:hover~.image[data-num="5"] {
+    display: block;
+}
+
+[class^=hover-box][data-num="6"]:hover~.image[data-num="6"] {
+    display: flex;
+}
+
+[class^=hover-box][data-num="7"]:hover~.image[data-num="7"] {
+    display: block;
+}
+
+[class^=hover-box][data-num="8"]:hover~.image[data-num="8"] {
+    display: block;
+}
+
+[class^=hover-box][data-num="9"]:hover~.image[data-num="9"] {
+    display: block;
+}
+
+[class^=hover-box][data-num="10"]:hover~.image[data-num="10"] {
+    display: block;
+}
+
+.hover-box {
+    flex: 1 0;
+}
+
+.card {
+    cursor: pointer;
+}
+
+.images {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+}
+
+.image {
+    height: auto;
+    width: 100%;
+    display: block;
+}
+
+.images .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+}
+
+product-images {
+    position: relative;
+}

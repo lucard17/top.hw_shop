@@ -46,7 +46,7 @@ class Item {
             this.#buttonDelete
         ])
 
-        this.#container.appendChild(this.#element);
+        this.#container.append(this.#element);
         this.#element.addEventListener("click", this.#handleItemClicked.bind(this));
         this.#input.addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
@@ -300,11 +300,15 @@ class InputGroup {
 class ProductForm {
     #modal;
     #container;
+    #imagesContainer;
+    #deleteImages = [];
     #inputItems = {};
     #eventEmiter;
+    #form;
     #buttonDeny;
     #buttonConfirm;
     #buttonClose;
+    #filesUpload;
 
     #id;
     #type;
@@ -313,8 +317,9 @@ class ProductForm {
         this.#modal = modal;
         // this.#modal.show();
         this.#container = modal._element;
+        this.#form = this.#container.querySelector("#product-form");
         eventEmitterElement.addEventListener("selectedItemChanged", this.#handleSelectedItemChange.bind(this));
-        const controls = this.#container.querySelectorAll(".form-control");
+        const controls = this.#container.querySelectorAll(".form-control:not([type=file]):not([type=hidden])");
         controls.forEach(item => {
             this.#inputItems[item.name] = item;
         });
@@ -327,6 +332,9 @@ class ProductForm {
 
         this.#buttonClose = this.#container.querySelector("#product-form-close");
         this.#buttonClose.addEventListener("click", this.#handleClose.bind(this));
+
+        this.#filesUpload = this.#container.querySelector("#product-images-upload");
+        this.#imagesContainer = this.#container.querySelector("#product-images");
     };
     #handleSelectedItemChange(event) {
         if (event.detail.id !== 0) {
@@ -337,7 +345,7 @@ class ProductForm {
         }
     }
     #fetchData() {
-        return fetchItems({ action: "select", type: this.#type, id: this.#id })
+        return fetchItems({ action: "select", type: this.#type, id: this.#id, productForm: true })
             .then(product => {
                 if (Array.isArray(product) && product.length === 1) {
                     this.#data = product[0];
@@ -349,9 +357,29 @@ class ProductForm {
             });
     }
     #valuesFill() {
+
+        this.#actualizeImages(this.#data.images)
         for (const name in this.#inputItems) {
             this.#inputItems[name].value = this.#data[name];
         }
+    }
+    #actualizeImages(imagesData) {
+        this.#imagesContainer.querySelectorAll("product-image-item").forEach(element => element.remove());
+        if (imagesData.length > 0) {
+            imagesData.forEach(image => {
+                const newImg = new ProductImageItem(image.src, image.index);
+                newImg.addEventListener('image-delete', this.#handleImageDelete.bind(this));
+                this.#imagesContainer.append(newImg);
+            });
+        } else {
+            this.#imagesContainer.append(new ProductImageItem());
+        }
+    }
+    #handleImageDelete(event) {
+        this.#deleteImages.push(event.detail.index);
+        event.currentTarget.remove();
+
+
     }
     #valuesExtract() {
         const values = {};
@@ -373,6 +401,7 @@ class ProductForm {
         this.#data = undefined;
     }
     #handleDeny() {
+        this.#form.reset();
         this.#valuesFill();
     }
     #handleConfirm(event) {
@@ -380,13 +409,18 @@ class ProductForm {
             action: "update",
             type: this.#type,
             id: this.#id,
-            ...this.#valuesExtract()
+            files: this.#filesUpload.files,
+            deleteImages: this.#deleteImages,
+            ...this.#valuesExtract(),
+
         };
         fetchItems(parameters).then(succes => {
             if (succes) {
+                this.#deleteImages = [];
+                this.#form.reset();
                 this.#fetchData().then(succes => {
                     if (succes) {
-                        this.#eventEmiter.update({ id: this.#data.id, name: this.#data.name })
+                        this.#eventEmiter.update({ id: this.#data.id, name: this.#data.name });
                     }
                 });
             } else {
@@ -402,6 +436,36 @@ class ProductForm {
     }
     get container() { return this.#container }
 }
+class ProductImageItem extends HTMLElement {
+    #index;
+    #link;
+    #buttonDelete;
+    constructor(link = "images/no_image.png", index = undefined) {
+        super();
+        this.#index = index;
+        this.#link = link;
+
+        this.className = 'col-6 col-sm-4 col-md-3 col-lg-1 product-image-wrapper';
+        this.append(
+            createElement("img", { src: this.#link + "?t=" + new Date().getTime(), alt: "", class: "product-image rounded ", })
+        );
+
+        if (index !== undefined) {
+            this.append(
+                createElement("button", { class: "btn btn-danger bi bi-trash product-image-overlay", type: "button" }, [], (e) => this.#buttonDelete = e)
+            );
+            this.#buttonDelete.addEventListener('click', () => {
+                this.#buttonDelete.dispatchEvent(new CustomEvent('image-delete', {
+                    bubbles: true, detail: {
+                        index: this.#index,
+                    }
+                }))
+            })
+        }
+    }
+    get index() { return this.#index }
+}
+customElements.define('product-image-item', ProductImageItem);
 const sectorsContainer = document.getElementById("sectors-wrapper");
 const categoriesContainer = document.getElementById("categories-wrapper");
 const productsContainer = document.getElementById("products-wrapper");
@@ -431,7 +495,7 @@ const ProductsInputGroup = new InputGroup(
     }
 )
 const productForm = new ProductForm({
-    modal: new bootstrap.Modal(document.getElementById('product-form')),
+    modal: new bootstrap.Modal(document.getElementById('product-form-modal')),
     eventEmitterElement: Products.container
 });
 
@@ -442,9 +506,13 @@ fetchItems({ action: "select", type: "sector" }).then(query_data => {
 
 
 function fetchItems({ action = "", type = "", id = 0, name = "", p_id = 0,
-    brand = "", description = "", price = 0 } = {}) {
+    brand = "", description = "", price = 0, files, productForm = false, deleteImages = [] } = {}) {
     const formData = new FormData();
-
+    if (files !== undefined) {
+        for (file of files) {
+            formData.append('files[]', file, file.name);
+        }
+    }
     if (action !== "") { formData.append("action", action) };
     if (type !== "") { formData.append("type", type) };
     if (id !== 0) { formData.append("id", id) };
@@ -453,6 +521,8 @@ function fetchItems({ action = "", type = "", id = 0, name = "", p_id = 0,
     if (brand !== "") { formData.append("brand", brand) };
     if (description !== "") { formData.append("description", description) };
     if (price !== 0) { formData.append("price", price) };
+    if (productForm) { formData.append("productForm", true) };
+    if (deleteImages.length > 0) { formData.append("deleteImages", JSON.stringify(deleteImages)) }
     try {
         const promise = fetch("./functions/admin.php", {
             method: 'POST',

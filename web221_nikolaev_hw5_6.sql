@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Апр 06 2023 г., 07:58
+-- Время создания: Апр 16 2023 г., 18:52
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.1.9
 
@@ -38,9 +38,9 @@ CREATE TABLE `carts` (
 --
 
 INSERT INTO `carts` (`u_id`, `p_id`, `count`) VALUES
-(1, 1, 2),
-(1, 2, 2),
-(1, 6, 1);
+(1, 1, 7),
+(1, 2, 1),
+(1, 6, 2);
 
 -- --------------------------------------------------------
 
@@ -83,20 +83,21 @@ CREATE TABLE `products` (
   `p_id` int NOT NULL,
   `brand` varchar(255) DEFAULT '',
   `price` mediumint UNSIGNED DEFAULT '0',
-  `description` varchar(512) DEFAULT ''
+  `description` varchar(512) DEFAULT '',
+  `images_number` tinyint UNSIGNED DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `p_id`, `brand`, `price`, `description`) VALUES
-(1, 'Лушая телефона', 1, 'Луший', 20000, 'Лушая телефона'),
-(2, 'Самая лушая телефона', 1, 'Самый луший', 30000, 'Самая лушая телефона EVER'),
-(3, 'product 1', 3, '', 0, ''),
-(4, 'SuperProduct', 3, '', 0, ''),
-(6, 'Самая наилушая телефона', 1, 'Самый наилуший', 40000, 'Самая наилушая телефона EVER'),
-(14, 'product', 10, '', 0, '');
+INSERT INTO `products` (`id`, `name`, `p_id`, `brand`, `price`, `description`, `images_number`) VALUES
+(1, 'Лушая телефона', 1, 'Луший', 20000, 'Лушая телефона', 8),
+(2, 'Самая лушая телефона', 1, 'Самый луший', 30000, 'Самая лушая телефона EVER', 8),
+(3, 'product 1', 3, '', 0, '', 0),
+(4, 'SuperProduct', 3, '', 0, '', 0),
+(6, 'Самая наилушая телефона', 1, 'Самый наилуший', 40000, 'Самая наилушая телефона EVER', 0),
+(14, 'product', 10, '', 0, '', 0);
 
 -- --------------------------------------------------------
 

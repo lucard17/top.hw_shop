@@ -57,15 +57,22 @@
         </div>
     </div>
 </div>
-<div class="modal modal-xl fade" id="product-form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal modal-xl fade" id="product-form-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered ">
-        <form class="modal-content">
+        <form class="modal-content" id="product-form">
             <div class="modal-header  border-0 mb-3">
                 <h4 class="modal-title">Редактирование продукта</h4>
-                
-                <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Close" id="product-form-close" ></button>
+                <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Close" id="product-form-close"></button>
             </div>
             <div class="modal-body">
+                <div class="row flex-wrap gy-3 gx-3 " id="product-images">
+
+                </div>
+                <div class="mb-3">
+                    <label for="product-images-upload" class="form-label">Upload images</label>
+                    <input class="form-control" type="file" name="product_images[]" id="product-images-upload" multiple accept="image/*">
+                    <input type="hidden" name="MAX_FILE_SIZE" value="500000" />
+                </div>
                 <div class="form-group pb-3">
                     <label for="product-name">Name:</label>
                     <input type="text" name="name" id="product-name" class="form-control">

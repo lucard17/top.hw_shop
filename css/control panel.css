@@ -23,3 +23,30 @@
 .item-set input:not(:disabled) {
     text-decoration: underline;
 }
+
+.product-image-wrapper {
+    position: relative;
+}
+
+.product-image {
+    width: 100%;
+}
+
+.product-image-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--bs-gutter-x) * 0.5);
+    right: calc(var(--bs-gutter-x) * 0.5);
+    opacity: 0;
+    font-size: 2rem;
+    /* pointer-events: none; */
+    /* display: flex;
+    justify-content: flex-end;
+    align-items: flex-end; */
+}
+.product-image-overlay:hover{
+    opacity: 0.8;
+    /* pointer-events: unset; */
+
+}

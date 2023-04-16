@@ -1,4 +1,5 @@
 <?php
+include_once('functions.php');
 include_once('dbconnect.php');
 session_start();
 if (!isset($_SESSION['role_id']) || $_SESSION['role_id'] !== 1) {
@@ -8,13 +9,16 @@ if (!isset($_SESSION['role_id']) || $_SESSION['role_id'] !== 1) {
 $getNames = ['id', 'p_id'];
 $updateNames = ['name', 'brand', 'description', 'price', 'p_id'];
 $insertNames = ['name', 'p_id'];
+
+
+
 if (!isset($_POST["action"])) {
     exit("action is not set");
 }
 if (!isset($_POST["type"])) {
     exit("type is not set");
 }
-
+$table;
 switch ($_POST["type"]) {
     case "sector":
         $table = "sectors";
@@ -26,7 +30,12 @@ switch ($_POST["type"]) {
         $table = "products";
         break;
 }
-
+if ($table == "products" && isset($_POST["deleteImages"])) {
+    $productImagesNumber = removeProductImages($_POST['id'], json_decode($_POST["deleteImages"]));
+}
+if ($table == "products" && isset($_FILES['files'])) {
+    $productImagesNumber = insertProductImages($_POST['id'], $_FILES);
+}
 
 try {
     switch ($_POST["action"]) {
@@ -54,6 +63,20 @@ try {
                 $stmt = pdo()->prepare($query);
                 $stmt->execute();
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            if ($table == 'products' && isset($_POST['productForm'])) {
+                for ($i = 0; $i < count($result); $i++) {
+                    if ($result[$i]["images_number"] > 0) {
+                        $result[$i]['images'] =  getProductImagesPathNames($result[$i]['id']);
+                    } else {
+                        $result[$i]['images'] = [];
+                    }
+                }
+                // foreach ($result as $product) {
+                //     if ($product["images_number"] > 0) {
+                //         $product['images'] = getProductImagesPathNames($product['id']);
+                //     }
+                // }
             }
             exit(json_encode($result));
             break;
@@ -94,6 +117,10 @@ try {
                     $parameters[$name] = $_POST[$name];
                 }
             }
+            if ($table = "products" && isset($_FILES['files'])) {
+                $query .= " images_number =:images_number,";
+                $parameters['images_number'] = $productImagesNumber;
+            }
             $query = preg_replace("/,$/", "", $query);
             $query .= " WHERE id = :id";
             $parameters['id'] = $_POST["id"];
@@ -119,3 +146,4 @@ try {
     // echo json_encode($parameters);
     // echo json_encode($e);
 }
+
