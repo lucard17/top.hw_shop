@@ -11,6 +11,7 @@ const Password = new FormInput({
     feedbackMessageFN: passwordValidationFeedback,
 });
 
+
 class Form {
     static #formIsValid = false;
     static #element = document.getElementById("login-form");

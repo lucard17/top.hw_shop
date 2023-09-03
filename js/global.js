@@ -311,14 +311,7 @@ function createElement(type, attributes = {}, childs = [], returnCallBack = (ele
     for (attribute in attributes) {
         element.setAttribute(attribute, attributes[attribute]);
     }
-    childs.forEach(child => {
-        if (child instanceof Node) {
-            element.appendChild(child);
-        } else {
-            element.innerHTML = child;
-        }
-
-    });
+    element.append(...childs);
     returnCallBack(element)
     return element;
 }
